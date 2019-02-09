@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) {
-        User user = new User();
+        Users user = new Users();
         user.setEmail("ddssadfddasdddsss@o2.pl");
         user.setFirstName("Tomek");;
         user.setPassword("admin123");

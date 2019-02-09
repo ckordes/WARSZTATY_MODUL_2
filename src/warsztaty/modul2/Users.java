@@ -1,11 +1,9 @@
 package warsztaty.modul2;
 
-import com.mysql.cj.protocol.Resultset;
-
 import java.sql.*;
 import java.util.Arrays;
 
-public class User {
+public class Users {
     private int id;
     private String firstName;
     private String password;
@@ -68,14 +66,14 @@ public class User {
         }
     }
 
-    public static User[] loadAllUsers() {
-        User[] allUsers = new User[0];
+    public static Users[] loadAllUsers() {
+        Users[] allUsers = new Users[0];
         try (Connection connection = DatabaseConnection.getConnection()) {
             String selectAllUsersQuery = "select * from users;";
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(selectAllUsersQuery);
             while (resultSet.next()) {
-                User user = new User();
+                Users user = new Users();
                 user.email = resultSet.getString("email");
                 user.firstName = resultSet.getString("firstName");
                 allUsers = Arrays.copyOf(allUsers, allUsers.length + 1);
@@ -106,8 +104,8 @@ public class User {
         }
     }
 
-    public static User loadUserByID(int id) {
-        User user = new User();
+    public static Users loadUserByID(int id) {
+        Users user = new Users();
         try (Connection connection = DatabaseConnection.getConnection()) {
             String update = "select * from users where id =?";
             PreparedStatement preparedStatement = connection.prepareStatement(update);
