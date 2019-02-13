@@ -32,3 +32,7 @@ users_id bigint(20),
 FOREIGN KEY(exercise_id) REFERENCES exercise(id),
 FOREIGN KEY(users_id) references users(id)
 );
+
+select * from solution
+JOIN users on solution.users_id = users.id
+where users.id =1;

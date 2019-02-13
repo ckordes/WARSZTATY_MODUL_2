@@ -1,5 +1,7 @@
 package warsztaty.modul2;
 
+import sun.awt.image.MultiResolutionToolkitImage;
+
 import java.sql.*;
 import java.util.Arrays;
 
@@ -124,6 +126,70 @@ public class Solution {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Solution[] loadAllByUserId(int id) {
+        Solution solution = new Solution();
+        Solution[] allSolutions = new Solution[0];
+
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String update = "select * from solution" +
+                    "JOIN users on solution.users_id = users.id" +
+                    "where users.id =?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(update);
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                solution.id = rs.getInt("id");
+                solution.created = rs.getDate("created");
+                solution.updated = rs.getDate("updated");
+                solution.description = rs.getString("description");
+                solution.users_id = rs.getInt("users_id");
+                solution.exercise_id = rs.getInt("exercise_id");
+
+                allSolutions = Arrays.copyOf(allSolutions, allSolutions.length + 1);
+                allSolutions[allSolutions.length - 1] = solution;
+            }
+            return allSolutions;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return allSolutions;
+    }
+
+    /*
+    pobranie wszystkich rozwiązań danego zadania, posortowanych od najnowszego do najstarszego
+    (dopisz metodę loadAllByExerciseId do klasy Solution),
+     */
+
+    public static Solution[] loadAllByExerciseId(int id) {
+        Solution solution = new Solution();
+        Solution[] allSolutions = new Solution[0];
+
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String update = "select * from solution" +
+                    "JOIN exercise on solution.exercise_id = exercise.id" +
+                    "where exercise.id = ?" +
+                    "order by updated desc;";
+            PreparedStatement preparedStatement = connection.prepareStatement(update);
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                solution.id = rs.getInt("id");
+                solution.updated = rs.getDate("updated");
+                solution.created = rs.getDate("created");
+                solution.description = rs.getString("description");
+                solution.users_id = rs.getInt("users_id");
+                solution.exercise_id = rs.getInt("exercise_id");
+
+                allSolutions = Arrays.copyOf(allSolutions, allSolutions.length + 1);
+                allSolutions[allSolutions.length - 1] = solution;
+            }
+            return allSolutions;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return allSolutions;
     }
 
     public static Solution loadSolutionByID(int id) {

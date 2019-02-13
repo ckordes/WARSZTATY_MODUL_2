@@ -1,6 +1,7 @@
 package warsztaty.modul2;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Users {
@@ -124,18 +125,47 @@ public class Users {
         return user;
     }
 
-    public  void deleteUserByID(int id)throws SQLException{
-        try(Connection connection = DatabaseConnection.getConnection()){
-                if (this.id != 0) {
-                    String sql = "DELETE FROM users WHERE id=?";
-                    PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                    preparedStatement.setInt(1, id);
-                    preparedStatement.executeUpdate();
-                    this.id = 0;
-                }
-        }catch (SQLException e){
+    public void deleteUserByID(int id) throws SQLException {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            if (this.id != 0) {
+                String sql = "DELETE FROM users WHERE id=?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, id);
+                preparedStatement.executeUpdate();
+                this.id = 0;
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /*
+pobranie wszystkich członków danej grupy (dopisz metodę loadAllByGroupId do klasy User).
+ */
+    public static Users[] loadAllByGroupId(int id) {
+        Users user = new Users();
+        Users[] allUsers = new Users[0];
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String update = "select * from users" +
+                    "join user_group on users.user_group_id = user_group.id" +
+                    "WHERE user_group_id = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(update);
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                user.id = rs.getInt("id");
+                user.email = rs.getString("email");
+                user.firstName = rs.getString("firstName");
+                user.password = rs.getString("password");
+
+                Arrays.copyOf(allUsers, allUsers.length + 1);
+                allUsers[allUsers.length - 1] = user;
+            }
+            return allUsers;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return allUsers;
     }
 
     @Override
