@@ -1,14 +1,15 @@
 package warsztaty.modul2;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Users {
     private int id;
     private String firstName;
     private String password;
     private String email;
+    private int user_group_id;
 
     /**
      * getters and setters
@@ -24,6 +25,10 @@ public class Users {
 
     public String getPassword() {
         return password;
+    }
+
+    public int getUser_group_id() {
+        return user_group_id;
     }
 
     public String getEmail() {
@@ -42,6 +47,10 @@ public class Users {
         this.email = email;
     }
 
+    public void setUser_group_id(int user_group_id) {
+        this.user_group_id = user_group_id;
+    }
+
     /**
      * operacje bazodanowe dla ActiveRecord
      */
@@ -49,11 +58,12 @@ public class Users {
     public void saveToDB() {
         if (this.id == 0) {
             try (Connection connection = DatabaseConnection.getConnection()) {
-                String insertQuery = "insert into users(email,password,firstname) values (?,?,?);";
+                String insertQuery = "insert into users(email,password,firstname,user_group_id) values (?,?,?,?);";
                 PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
                 preparedStatement.setString(1, this.email);
                 preparedStatement.setString(2, this.password);
                 preparedStatement.setString(3, this.firstName);
+                preparedStatement.setInt(4, this.user_group_id);
                 preparedStatement.executeUpdate();
 
                 ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -77,6 +87,8 @@ public class Users {
                 Users user = new Users();
                 user.email = resultSet.getString("email");
                 user.firstName = resultSet.getString("firstName");
+                user.id = resultSet.getInt("id");
+                user.user_group_id = resultSet.getInt("user_group_id");
                 allUsers = Arrays.copyOf(allUsers, allUsers.length + 1);
                 allUsers[allUsers.length - 1] = user;
             }
@@ -91,12 +103,13 @@ public class Users {
             if (this.id == 0) {
                 saveToDB();
             } else {
-                String sql = "UPDATE users SET email =? ,password=? ,firstname=? where id = ?";
+                String sql = "UPDATE users SET email =? ,password=? ,firstname=?, user_group_id=? where id = ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setString(1, this.email);
                 preparedStatement.setString(2, this.password);
-                preparedStatement.setString(3, this.password);
-                preparedStatement.setInt(4, this.id);
+                preparedStatement.setInt(4, this.user_group_id);
+                preparedStatement.setString(3, this.firstName);
+                preparedStatement.setInt(5, this.id);
                 preparedStatement.executeUpdate();
             }
 
@@ -117,6 +130,7 @@ public class Users {
                 user.firstName = rs.getString("firstName");
                 user.email = rs.getString("email");
                 user.password = rs.getString("password");
+                user.user_group_id = rs.getInt("user_group_id");
             }
             return user;
         } catch (SQLException e) {
@@ -157,6 +171,7 @@ pobranie wszystkich członków danej grupy (dopisz metodę loadAllByGroupId do k
                 user.email = rs.getString("email");
                 user.firstName = rs.getString("firstName");
                 user.password = rs.getString("password");
+                user.user_group_id = rs.getInt("user_group_id");
 
                 Arrays.copyOf(allUsers, allUsers.length + 1);
                 allUsers[allUsers.length - 1] = user;
@@ -170,11 +185,96 @@ pobranie wszystkich członków danej grupy (dopisz metodę loadAllByGroupId do k
 
     @Override
     public String toString() {
-        return "User{" +
+        return
                 "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+                        ", firstName='" + firstName + '\'' +
+                        ", password='" + password + '\'' +
+                        ", email='" + email + '\'' +
+                        ", user_group_id='" + user_group_id + '\'' +
+                        "\n";
+    }
+
+    public void runUsers() {
+        Scanner scanner = new Scanner(System.in);
+        String answer;
+        while (true) {
+            System.out.println(Arrays.toString(loadAllUsers()));
+            System.out.println("Wybierz jedna z opcji: ");
+            System.out.println("    add – dodanie użytkownika,");
+            System.out.println("    edit – edycja użytkownika,");
+            System.out.println("    delete – usunięcie użytkownika,");
+            System.out.println("    quit – zakończenie programu.");
+            answer = scanner.next();
+            if (answer.equals("add")) {
+                Scanner scanAdd = new Scanner(System.in);
+
+                System.out.println("Podaj imie: ");
+                this.setFirstName(scanAdd.next());
+                System.out.println("Podaj email: ");
+                this.setEmail(scanAdd.next());
+                System.out.println("Podaj haslo: ");
+                this.setPassword(scanAdd.next());
+                System.out.println("Podaj ID user group: ");
+                this.setUser_group_id(scanAdd.nextInt());
+                saveToDB();
+
+//                jeśli wybrano add – program zapyta o wszystkie dane, występujące w klasie User, oprócz id,
+            } else if (answer.equals("edit")) {
+                Scanner scanAdd = new Scanner(System.in);
+                System.out.println("Podaj ID: ");
+                this.id = scanAdd.nextInt();
+                System.out.println("Podaj imie: ");
+                this.setFirstName(scanAdd.next());
+                System.out.println("Podaj email: ");
+                this.setEmail(scanAdd.next());
+                System.out.println("Podaj haslo: ");
+                this.setPassword(scanAdd.next());
+                System.out.println("Podaj ID user group: ");
+                this.setUser_group_id(scanAdd.nextInt());
+                updateUser();
+                //w przypadku edit – o wszystkie dane występujące w klasie User oraz id,
+            } else if (answer.equals("delete")) {
+                Scanner scanAdd = new Scanner(System.in);
+                System.out.println("Podaj ID: ");
+                this.id = scanAdd.nextInt();
+                try {
+                    deleteUserByID(this.id);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                //    po wybraniu delete – zapyta o id użytkownika, którego należy usunąć.
+            } else if (answer.equals("quit")) {
+                break;
+            } else {
+                System.out.println("Bledny wybor! Wybierz podobnie!");
+            }
+
+        }
     }
 }
+
+/*
+
+Zadanie 1
+Program 1 – zarządzanie użytkownikami
+
+Program po uruchomieniu wyświetli na konsoli listę wszystkich użytkowników.
+
+Następnie wyświetli
+
+"Wybierz jedną z opcji:
+
+    add – dodanie użytkownika,
+    edit – edycja użytkownika,
+    delete – usunięcie użytkownika,
+    quit – zakończenie programu."
+
+Po wpisaniu i zatwierdzeniu jednej z opcji program odpyta o odpowiednie dane:
+
+    jeśli wybrano add – program zapyta o wszystkie dane, występujące w klasie User, oprócz id,
+    w przypadku edit – o wszystkie dane występujące w klasie User oraz id,
+    po wybraniu delete – zapyta o id użytkownika, którego należy usunąć.
+
+Po wykonaniu dowolnej z opcji, program ponownie wyświetli listę danych i zada pytanie o wybór opcji.
+
+ */

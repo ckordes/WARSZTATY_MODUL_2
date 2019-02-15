@@ -53,6 +53,7 @@ public class UserGroup {
             while (resultSet.next()) {
                 UserGroup userGroup = new UserGroup();
                 userGroup.name = resultSet.getString("name");
+                userGroup.id = resultSet.getInt("id");
                 allUserGroups = Arrays.copyOf(allUserGroups, allUserGroups.length + 1);
                 allUserGroups[allUserGroups.length - 1] = userGroup;
             }

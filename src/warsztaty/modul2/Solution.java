@@ -100,6 +100,7 @@ public class Solution {
                 solution.description = resultSet.getString("description");
                 solution.exercise_id = resultSet.getInt("exercise_id");
                 solution.users_id = resultSet.getInt("users_id");
+                solution.id = resultSet.getInt("id");
 
                 allSolutions = Arrays.copyOf(allSolutions, allSolutions.length + 1);
                 allSolutions[allSolutions.length - 1] = solution;

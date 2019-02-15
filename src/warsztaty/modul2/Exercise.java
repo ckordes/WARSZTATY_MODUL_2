@@ -2,6 +2,7 @@ package warsztaty.modul2;
 
 import java.sql.*;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Exercise {
     private int id;
@@ -65,6 +66,7 @@ public class Exercise {
                 Exercise exercise = new Exercise();
                 exercise.title = resultSet.getString("title");
                 exercise.description = resultSet.getString("description");
+                exercise.id = resultSet.getInt("id");
                 allExercises = Arrays.copyOf(allExercises, allExercises.length + 1);
                 allExercises[allExercises.length - 1] = exercise;
             }
@@ -124,4 +126,87 @@ public class Exercise {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public String toString() {
+        return
+                "id=" + id +
+                        ", tytul='" + title + '\'' +
+                        ", opis='" + description + '\'' +
+                        "\n";
+    }
+
+    public void runExercise() {
+        Scanner scanner = new Scanner(System.in);
+        String answer;
+        while (true) {
+            System.out.println(Arrays.toString(loadAllExercises()));
+            System.out.println("Wybierz jedna z opcji: ");
+            System.out.println("    add – dodanie użytkownika,");
+            System.out.println("    edit – edycja użytkownika,");
+            System.out.println("    delete – usunięcie użytkownika,");
+            System.out.println("    quit – zakończenie programu.");
+            answer = scanner.next();
+            if (answer.equals("add")) {
+                Scanner scanAdd = new Scanner(System.in);
+
+                System.out.println("Podaj tytul: ");
+                this.setTitle(scanAdd.nextLine());
+                System.out.println("Podaj opis: ");
+                this.setDescription(scanAdd.nextLine());
+                saveToDB();
+
+            } else if (answer.equals("edit")) {
+                Scanner scanAdd = new Scanner(System.in);
+                System.out.println("Podaj ID: ");
+                this.id = scanAdd.nextInt();
+                System.out.println("Podaj tytul: ");
+                this.setTitle(scanAdd.nextLine());
+                System.out.println("Podaj opis: ");
+                this.setDescription(scanAdd.nextLine());
+                updateExercise();
+            } else if (answer.equals("delete")) {
+                Scanner scanAdd = new Scanner(System.in);
+                System.out.println("Podaj ID: ");
+                this.id = scanAdd.nextInt();
+                try {
+                    deleteExerciseByID(this.id);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                //    po wybraniu delete – zapyta o id użytkownika, którego należy usunąć.
+            } else if (answer.equals("quit")) {
+                break;
+            } else {
+                System.out.println("Bledny wybor! Wybierz podobnie!");
+            }
+
+        }
+    }
+
 }
+/*
+
+Zadanie 2
+Program 2 – zarządzanie zadaniami
+
+Program po uruchomieniu wyświetli na konsoli listę wszystkich zadań.
+
+Następnie wyświetli w konsoli napis
+
+"Wybierz jedną z opcji:
+
+    add – dodanie zadania,
+    edit – edycja zadania,
+    delete – edycja zadania,
+    quit – zakończenie programu."
+
+Po wpisaniu i zatwierdzeniu odpowiedniej opcji program odpyta o następujące dane:
+
+    w przypadku add – o wszystkie dane występujące w klasie Exercise bez id,
+    po wybraniu edit – wszystkie dane występujące w klasie Exercise oraz id,
+    jeśli wybrano delete – zapyta o id zadania które należy usunąć.
+
+Po wykonaniu dowolnej z opcji, program ponownie wyświetli listę danych i zada pytanie o wybór opcji.
+
+ */

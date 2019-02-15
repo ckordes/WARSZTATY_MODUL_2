@@ -1,16 +1,23 @@
 package warsztaty.modul2;
 
-import java.util.Arrays;
-
 public class Main {
 
     public static void main(String[] args) {
         Users user = new Users();
-        user.setEmail("ddssadfddasdddsss@o2.pl");
-        user.setFirstName("Tomek");;
-        user.setPassword("admin123");
-        user.saveToDB();
+        Exercise exercise = new Exercise();
 
-        System.out.println(Arrays.toString(user.loadAllUsers()));
+//        user.setEmail("6@o2.pl");
+//        user.setFirstName("Tomek");
+//        user.setPassword("admin123");
+//        user.setUser_group_id(1);
+//        user.saveToDB();
+
+//        System.out.println(Arrays.toString(user.loadAllUsers()));
+
+
+//        --------------------------------------------------------------------------
+//        testing methods
+//        user.runUsers();
+        exercise.runExercise();
     }
 }
