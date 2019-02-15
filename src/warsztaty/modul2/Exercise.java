@@ -149,21 +149,24 @@ public class Exercise {
             answer = scanner.next();
             if (answer.equals("add")) {
                 Scanner scanAdd = new Scanner(System.in);
+                Scanner scanAdd2 = new Scanner(System.in);
 
                 System.out.println("Podaj tytul: ");
                 this.setTitle(scanAdd.nextLine());
                 System.out.println("Podaj opis: ");
-                this.setDescription(scanAdd.nextLine());
+                this.setDescription(scanAdd2.nextLine());
                 saveToDB();
 
             } else if (answer.equals("edit")) {
                 Scanner scanAdd = new Scanner(System.in);
+                Scanner scanAdd2 = new Scanner(System.in);
+                Scanner scanAdd3 = new Scanner(System.in);
                 System.out.println("Podaj ID: ");
                 this.id = scanAdd.nextInt();
                 System.out.println("Podaj tytul: ");
-                this.setTitle(scanAdd.nextLine());
+                this.setTitle(scanAdd2.nextLine());
                 System.out.println("Podaj opis: ");
-                this.setDescription(scanAdd.nextLine());
+                this.setDescription(scanAdd3.nextLine());
                 updateExercise();
             } else if (answer.equals("delete")) {
                 Scanner scanAdd = new Scanner(System.in);

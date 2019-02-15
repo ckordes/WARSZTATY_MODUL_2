@@ -2,6 +2,7 @@ package warsztaty.modul2;
 
 import java.sql.*;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class UserGroup {
     private int id;
@@ -112,5 +113,79 @@ public class UserGroup {
             e.printStackTrace();
         }
     }
+    @Override
+    public String toString() {
+        return
+                "id=" + id +
+                        ", nazwa='" + name + '\'' +
+                        "\n";
+    }
 
+    public void runUserGroups() {
+        Scanner scanner = new Scanner(System.in);
+        String answer;
+        while (true) {
+            System.out.println(Arrays.toString(loadAllUserGroups()));
+            System.out.println("Wybierz jedna z opcji: ");
+            System.out.println("    add – dodanie użytkownika,");
+            System.out.println("    edit – edycja użytkownika,");
+            System.out.println("    delete – usunięcie użytkownika,");
+            System.out.println("    quit – zakończenie programu.");
+            answer = scanner.next();
+            if (answer.equals("add")) {
+                Scanner scanAdd = new Scanner(System.in);
+
+                System.out.println("Podaj nazwe grupy: ");
+                this.setName(scanAdd.nextLine());
+                saveToDB();
+
+            } else if (answer.equals("edit")) {
+                Scanner scanAdd = new Scanner(System.in);
+                Scanner scanAdd2 = new Scanner(System.in);
+                System.out.println("Podaj ID: ");
+                this.id = scanAdd.nextInt();
+                System.out.println("Podaj nazwe: ");
+                this.setName(scanAdd2.nextLine());
+                updateUserGroup();
+            } else if (answer.equals("delete")) {
+                Scanner scanAdd = new Scanner(System.in);
+                System.out.println("Podaj ID: ");
+                this.id = scanAdd.nextInt();
+                try {
+                    deleteUserGroupByID(this.id);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } else if (answer.equals("quit")) {
+                break;
+            } else {
+                System.out.println("Bledny wybor! Wybierz podobnie!");
+            }
+        }
+    }
 }
+/*
+
+Zadanie 3
+Program 3 – zarządzanie grupami
+
+Program po uruchomieniu wyświetli na konsoli listę wszystkich grup.
+
+Następnie wyświetli w konsoli napis
+
+"Wybierz jedną z opcji:
+
+    add – dodanie grupy,
+    edit – edycja grupy,
+    delete – edycja grupy,
+    quit – zakończenie programu."
+
+Po wpisaniu i zatwierdzeniu odpowiedniej opcji program odpyta o dane i wykona odpowiednią operacje:
+
+    add – wszystkie dane występujące w klasie Group, bez id,
+    edit – wszystkie dane występujące w klasie Group oraz id,
+    delete – id grupy którą należy usunąć.
+
+Po wykonaniu dowolnej z opcji, program ponownie wyświetli listę danych i zada pytanie o wybór opcji.
+
+ */
