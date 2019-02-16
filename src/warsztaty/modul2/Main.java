@@ -6,6 +6,7 @@ public class Main {
         Users user = new Users();
         Exercise exercise = new Exercise();
         UserGroup userGroup = new UserGroup();
+        Solution solution = new Solution();
 
 //        user.setEmail("6@o2.pl");
 //        user.setFirstName("Tomek");
@@ -20,6 +21,7 @@ public class Main {
 //        testing methods
 //        user.runUsers();
 //        exercise.runExercise();
-        userGroup.runUserGroups();
+//        userGroup.runUserGroups();
+        solution.runSolution();
     }
 }

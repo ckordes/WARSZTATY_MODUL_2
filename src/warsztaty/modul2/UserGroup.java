@@ -127,9 +127,9 @@ public class UserGroup {
         while (true) {
             System.out.println(Arrays.toString(loadAllUserGroups()));
             System.out.println("Wybierz jedna z opcji: ");
-            System.out.println("    add – dodanie użytkownika,");
-            System.out.println("    edit – edycja użytkownika,");
-            System.out.println("    delete – usunięcie użytkownika,");
+            System.out.println("    add – dodanie grupy,");
+            System.out.println("    edit – edycja grupy,");
+            System.out.println("    delete – usuniecie grupy,");
             System.out.println("    quit – zakończenie programu.");
             answer = scanner.next();
             if (answer.equals("add")) {

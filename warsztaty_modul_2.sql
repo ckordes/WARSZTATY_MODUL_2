@@ -36,3 +36,27 @@ FOREIGN KEY(users_id) references users(id)
 select * from solution
 JOIN users on solution.users_id = users.id
 where users.id =1;
+
+select * from solution
+JOIN exercise on solution.exercise_id = exercise.id
+where exercise.id = 1
+order by updated desc;
+
+select * from users
+join user_group on users.user_group_id = user_group.id
+WHERE user_group_id = 1;
+
+set sql_safe_updates =0;
+
+insert into users(email,password,firstname,user_group_id) values ('1@oww.com','admin','Tomek','1');
+
+insert into user_group (name) VALUEs ('test4');
+
+insert into exercise (title,description) values ('title3','description number 3');
+
+select * from solution 
+JOIN users on solution.users_id = users.id 
+where users_id =1;
+    /*
+    pobranie wszystkich członków danej grupy (dopisz metodę loadAllByGroupId do klasy User).
+     */

@@ -4,6 +4,10 @@ import sun.awt.image.MultiResolutionToolkitImage;
 
 import java.sql.*;
 import java.util.Arrays;
+import java.util.Scanner;
+
+import static warsztaty.modul2.Users.loadAllUsers;
+import static warsztaty.modul2.Exercise.loadAllExercises;
 
 public class Solution {
     private int id;
@@ -69,7 +73,7 @@ public class Solution {
     public void saveToDB() {
         if (this.id == 0) {
             try (Connection connection = DatabaseConnection.getConnection()) {
-                String insertQuery = "insert into solution(created, updated, description,exercise_id, users_id) values (now(),now(),?,?,?);";
+                String insertQuery = "insert into solution(created, description,exercise_id, users_id) values (now(),?,?,?);";
                 PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
                 preparedStatement.setString(1, this.description);
                 preparedStatement.setInt(2, this.exercise_id);
@@ -134,13 +138,13 @@ public class Solution {
         Solution[] allSolutions = new Solution[0];
 
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String update = "select * from solution" +
-                    "JOIN users on solution.users_id = users.id" +
-                    "where users.id =?;";
+            String update = "select * from solution " +
+                    "JOIN users on solution.users_id = users.id " +
+                    "where users_id =?;";
             PreparedStatement preparedStatement = connection.prepareStatement(update);
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
+            while (rs.next()) {
                 solution.id = rs.getInt("id");
                 solution.created = rs.getDate("created");
                 solution.updated = rs.getDate("updated");
@@ -228,4 +232,98 @@ public class Solution {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public String toString() {
+        return
+                "id=" + id +
+                        ", utworzono='" + created + '\'' +
+                        ", zaktualizowano='" + updated + '\'' +
+                        ", opis='" + description + '\'' +
+                        ", numer zadania='" + exercise_id + '\'' +
+                        ", numer osoby='" + users_id + '\'' +
+                        "\n";
+    }
+/*
+    private int id;
+    private Date created;
+    private Date updated;
+    private String description;
+    private int exercise_id;
+    private int users_id;
+ */
+
+
+    public void runSolution() {
+        Scanner scanner = new Scanner(System.in);
+        String answer;
+        while (true) {
+            System.out.println("Wybierz jedna z opcji: ");
+            System.out.println("    add – przypisywanie zadań do użytkowników,");
+            System.out.println("    view – przeglądanie rozwiązań danego użytkownika,");
+            System.out.println("    quit – zakończenie programu.");
+            answer = scanner.next();
+            if (answer.equals("add")) {
+                Scanner scanAdd = new Scanner(System.in);
+                Scanner scanAdd2 = new Scanner(System.in);
+//                jeśli wybrano add – wyświetli listę wszystkich użytkowników, odpyta o id,
+//                następnie wyświetli listę wszystkich zadań i zapyta o id zadania, utworzy i zapisze obiekt typu Solution.
+                System.out.println(Arrays.toString(loadAllUsers()));
+                System.out.println("Podaj id uzytkownika: ");
+                this.users_id = (scanAdd.nextInt());
+                System.out.println(Arrays.toString(loadAllExercises()));
+                System.out.println("Podaj ID zadania: ");
+                this.exercise_id = scanAdd.nextInt();
+//                System.out.println("Podaj opis: ");
+//                this.setDescription(scanAdd2.nextLine());
+                saveToDB();
+
+            } else if (answer.equals("view")) {
+                Scanner scanAdd = new Scanner(System.in);
+                Solution[] allSolutions;
+                int userID;
+                System.out.println(Arrays.toString(loadAllUsers()));
+                System.out.println("Podaj ID uzytkownika: ");
+                userID = scanAdd.nextInt();
+                allSolutions = loadAllByUserId(userID);
+                for (int i = 0; i < allSolutions.length; i++) {
+                    System.out.println("ID zadania: " + allSolutions[i].exercise_id +
+                            ", opis: " + allSolutions[i].description +
+                            ", utworzono: " + allSolutions[i].created +
+                            ", zaaktualizowano: " + allSolutions[i].updated);
+                }
+            } else if (answer.equals("quit")) {
+                break;
+            } else {
+                System.out.println("Bledny wybor! Wybierz podobnie!");
+            }
+
+        }
+    }
 }
+/*
+
+Zadanie 4
+Program 4 – przypisywanie zadań
+
+Program po uruchomieniu wyświetli w konsoli napis
+
+"Wybierz jedną z opcji:
+
+    add – przypisywanie zadań do użytkowników,
+    view – przeglądanie rozwiązań danego użytkownika,
+    quit – zakończenie programu."
+
+Po wpisaniu i zatwierdzeniu odpowiedniej opcji program odpyta o dane:
+
+    jeśli wybrano add – wyświetli listę wszystkich użytkowników, odpyta o id,
+    następnie wyświetli listę wszystkich zadań i zapyta o id zadania, utworzy i zapisze obiekt typu Solution.
+
+    Pole created wypełni się automatycznie, a pola updated i description mają zostać puste.
+
+
+    view – zapyta o id użytkownika, którego rozwiązania chcemy zobaczyć.
+
+Po wykonaniu dowolnej z opcji, program ponownie zada pytanie o wybór opcji.
+
+ */

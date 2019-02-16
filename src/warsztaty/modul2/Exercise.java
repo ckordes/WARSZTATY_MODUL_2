@@ -142,9 +142,9 @@ public class Exercise {
         while (true) {
             System.out.println(Arrays.toString(loadAllExercises()));
             System.out.println("Wybierz jedna z opcji: ");
-            System.out.println("    add – dodanie użytkownika,");
-            System.out.println("    edit – edycja użytkownika,");
-            System.out.println("    delete – usunięcie użytkownika,");
+            System.out.println("    add – dodanie zadania,");
+            System.out.println("    edit – edycja zadania,");
+            System.out.println("    delete – usuniecie zadania,");
             System.out.println("    quit – zakończenie programu.");
             answer = scanner.next();
             if (answer.equals("add")) {
