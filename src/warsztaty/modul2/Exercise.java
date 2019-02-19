@@ -76,6 +76,34 @@ public class Exercise {
         return allExercises;
     }
 
+    public static Exercise[] loadAllExercisesByUserWithoutSolution(int userID) {
+        Exercise[] allExercises = new Exercise[0];
+        String showingExerciseWithoutUserSolution = "SELECT * FROM exercise " +
+                "WHERE exercise.id NOT IN (SELECT exercise_id FROM solution JOIN exercise ON"+
+                " solution.exercise_id = exercise.id WHERE users_id = ?);";
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(showingExerciseWithoutUserSolution);
+            preparedStatement.setInt(1, userID);
+            preparedStatement.executeQuery();
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+
+            while (resultSet.next()) {
+                Exercise exercise = new Exercise();
+                exercise.description = resultSet.getString("description");
+                exercise.title = resultSet.getString("title");
+                exercise.id = resultSet.getInt("id");
+                allExercises = Arrays.copyOf(allExercises, allExercises.length + 1);
+                allExercises[allExercises.length - 1] = exercise;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return allExercises;
+    }
+
+
+
     public void updateExercise() {
         try (Connection connection = DatabaseConnection.getConnection()) {
             if (this.id == 0) {
@@ -126,6 +154,7 @@ public class Exercise {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public String toString() {

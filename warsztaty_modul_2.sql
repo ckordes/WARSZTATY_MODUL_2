@@ -54,9 +54,16 @@ insert into user_group (name) VALUEs ('test4');
 
 insert into exercise (title,description) values ('title3','description number 3');
 
+insert into solution (created,description,exercise_id,users_id)values(now(),'description test 3', 3,1);
+
 select * from solution 
 JOIN users on solution.users_id = users.id 
 where users_id =1;
+
+select * from solution 
+JOIN users on solution.users_id = users.id
+where users_id =1;
+
     /*
     pobranie wszystkich członków danej grupy (dopisz metodę loadAllByGroupId do klasy User).
      */

@@ -157,7 +157,6 @@ public class Users {
 pobranie wszystkich członków danej grupy (dopisz metodę loadAllByGroupId do klasy User).
  */
     public static Users[] loadAllByGroupId(int id) {
-        Users user = new Users();
         Users[] allUsers = new Users[0];
         try (Connection connection = DatabaseConnection.getConnection()) {
             String update = "select * from users" +
@@ -167,6 +166,7 @@ pobranie wszystkich członków danej grupy (dopisz metodę loadAllByGroupId do k
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
+                Users user = new Users();
                 user.id = rs.getInt("id");
                 user.email = rs.getString("email");
                 user.firstName = rs.getString("firstName");

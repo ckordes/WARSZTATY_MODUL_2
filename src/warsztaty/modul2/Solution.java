@@ -134,7 +134,6 @@ public class Solution {
     }
 
     public static Solution[] loadAllByUserId(int id) {
-        Solution solution = new Solution();
         Solution[] allSolutions = new Solution[0];
 
         try (Connection connection = DatabaseConnection.getConnection()) {
@@ -145,6 +144,7 @@ public class Solution {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
+                Solution solution = new Solution();
                 solution.id = rs.getInt("id");
                 solution.created = rs.getDate("created");
                 solution.updated = rs.getDate("updated");
@@ -168,7 +168,6 @@ public class Solution {
      */
 
     public static Solution[] loadAllByExerciseId(int id) {
-        Solution solution = new Solution();
         Solution[] allSolutions = new Solution[0];
 
         try (Connection connection = DatabaseConnection.getConnection()) {
@@ -180,6 +179,7 @@ public class Solution {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
+                Solution solution = new Solution();
                 solution.id = rs.getInt("id");
                 solution.updated = rs.getDate("updated");
                 solution.created = rs.getDate("created");
@@ -301,6 +301,24 @@ public class Solution {
         }
     }
 }
+
+/*
+
+
+Po wybraniu odpowiedniej opcji, program odpyta o dane i wykona odpowiednią operację:
+
+    po wybraniu add – wyświetli listę zadań, do których Użytkownik nie dodał jeszcze rozwiązania,
+    a następnie odpyta o id zadania, do którego ma zostać dodane rozwiązanie.
+    Pole created zostanie wypełnione automatycznie, więc Użytkownik zostanie odpytany jeszcze tylko o rozwiązanie zadania,
+
+    w przypadku wybrania quit – program zakończy działanie.
+
+Dla uproszczenia przyjmujemy, że dodanego rozwiązania nie możemy usuwać, ani edytować.
+
+W przypadku próby dodania rozwiązania, które już istnieje czyli Użytkownik poda id z zakresu innego niż zaprezentowany w programie, program ma wyświetlić odpowiedni komunikat.
+
+ */
+
 /*
 
 Zadanie 4
